@@ -1,0 +1,22 @@
+[package]
+name = "rspyaml"
+version = "0.1.0"
+authors = ["weaton <weaton@redhat.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "rspyaml"
+crate-type = ["cdylib"]
+
+[dependencies]
+pythonize = "0.12.1"
+serde = "1.0"
+serde_yaml = "0.8"
+yaml-rust = "0.4"
+
+[dependencies.pyo3]
+version = "0.12.4"
+features = ["extension-module"]
+
