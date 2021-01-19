@@ -209,7 +209,7 @@ fn dumps(py: Python, obj: PyObject) -> PyResult<String> {
 
 
 #[pymodule]
-fn _rspyaml(py: Python, m: &PyModule) -> PyResult<()> {
+fn _rustyaml(py: Python, m: &PyModule) -> PyResult<()> {
     m.add("VERSION", VERSION)?;
     m.add_function(wrap_pyfunction!(loads, m)?).unwrap();
     m.add_function(wrap_pyfunction!(dumps, m)?).unwrap();

@@ -1,13 +1,13 @@
-from . import _rspyaml
+from . import _rustyaml
 from io import TextIOBase
 from pathlib import Path
 from typing import Any, TextIO, Union
 
 __all__ = ["loads", "load", "dump", "dumps", "VERSION"]
 
-VERSION = _rspyaml.VERSION
-loads = _rspyaml.loads
-dumps = _rspyaml.dumps
+VERSION = _rustyaml.VERSION
+loads = _rustyaml.loads
+dumps = _rustyaml.dumps
 
 
 def load(yaml: Union[str, Path, TextIO]) -> Any:

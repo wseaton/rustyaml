@@ -2,13 +2,13 @@
 from setuptools import setup
 
 packages = \
-['rspyaml']
+['rustyaml']
 
 package_data = \
 {'': ['*']}
 
 setup_kwargs = {
-    'name': 'rspyaml',
+    'name': 'rustyaml',
     'version': '0.1.0',
     'description': 'Python bindings for rust-yaml',
     'long_description': None,
