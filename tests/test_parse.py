@@ -10,6 +10,9 @@ accomplishment: >
   home run record in 1998.
 stats: |
   65 Home Runs
-  0.278 Batting Average"""
+  0.278 Batting Average
+floats:
+  - 0.56
+  """
 
-    print(parse_yaml(yaml))
+   return parse_yaml(yaml)

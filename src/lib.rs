@@ -35,13 +35,26 @@ fn convert_value(t: &Yaml, py: Python) -> PyResult<PyObject> {
         }
         YamlString(v) => Ok(v.to_object(py)),
         Integer(v) => Ok(v.to_object(py)),
-        Real(v) => Ok(v.to_object(py)),
+        Real(v) => Ok(parse_f64(v).unwrap().to_object(py)),
         Boolean(v) => Ok(v.to_object(py)),
         Null => Ok(py.None()),
         BadValue => Ok(py.None()),
         _ => Err(PyValueError::new_err("Serialization error")),
     }
 }
+
+
+// parse f64 as Core schema
+// See: https://github.com/chyh1990/yaml-rust/issues/51
+fn parse_f64(v: &str) -> Option<f64> {
+    match v {
+        ".inf" | ".Inf" | ".INF" | "+.inf" | "+.Inf" | "+.INF" => Some(f64::INFINITY),
+        "-.inf" | "-.Inf" | "-.INF" => Some(f64::NEG_INFINITY),
+        ".nan" | "NaN" | ".NAN" => Some(f64::NAN),
+        _ => v.parse::<f64>().ok(),
+    }
+}
+
 
 #[pyfunction]
 fn parse_yaml(py: Python, yaml: String) -> PyResult<PyObject> {
