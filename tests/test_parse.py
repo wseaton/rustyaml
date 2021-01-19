@@ -12,4 +12,4 @@ stats: |
   65 Home Runs
   0.278 Batting Average"""
 
-    parse_yaml(yaml)
+    print(parse_yaml(yaml))

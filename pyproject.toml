@@ -1,7 +1,6 @@
 [tool.poetry]
 name = "rspyaml"
 version = "0.1.0"
-repository = "https://github.com/wseaton/sqloxide"
 license = "MIT"
 description = "Python bindings for rust-yaml"
 authors = ["Will Eaton <me@wseaton.com>"]

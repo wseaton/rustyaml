@@ -58,7 +58,7 @@ fn parse_yaml(py: Python, yaml: String) -> PyResult<PyObject> {
 }
 
 #[pymodule]
-fn rspyaml(py: Python, m: &PyModule) -> PyResult<()> {
+fn _rspyaml(py: Python, m: &PyModule) -> PyResult<()> {
     m.add("VERSION", VERSION)?;
     m.add_function(wrap_pyfunction!(parse_yaml, m)?).unwrap();
     Ok(())
