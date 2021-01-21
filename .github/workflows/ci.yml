@@ -86,9 +86,6 @@ jobs:
       - name: pytest
         run: poetry run pytest tests
 
-      - name: Benchmark
-        run: poetry run pytest tests/benchmark.py
-
       - name: archive wheels
         uses: actions/upload-artifact@v2
         if: matrix.os != 'ubuntu-latest'
