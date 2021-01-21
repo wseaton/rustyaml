@@ -1,0 +1,142 @@
+name: CI
+
+on:
+  release:
+    types: [created]
+  push:
+  schedule:
+    # Runs every Thursday at 20:23 GMT to avoid bit rot
+    - cron: "20 23 * * 4"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: rustfmt, clippy
+
+      - name: Lint with rustfmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+
+      - name: Lint with clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --all-targets --all-features
+
+      - name: Test with cargo
+        uses: actions-rs/cargo@v1.0.1
+        with:
+          command: test
+          toolchain: nightly
+
+  native-build:
+    runs-on: ${{ matrix.os }}
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+        os: [macos-latest, windows-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+
+      - name: Add poetry to path
+        if:  matrix.os != 'windows-latest'
+        run: echo "${HOME}/.poetry/bin" >> $GITHUB_PATH
+      
+      - name: Add poetry to path
+        if:  matrix.os == 'windows-latest'
+        run: echo "${HOME}/.poetry/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install package deps
+        run: | 
+          poetry install
+      
+      - name: Install latest nightly
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+
+      - name: Build Python package
+        run: poetry run python setup.py bdist_wheel && poetry install
+
+      - name: pytest
+        run: poetry run pytest tests
+
+      - name: Benchmark
+        run: poetry run pytest tests/benchmark.py
+
+      - name: archive wheels
+        uses: actions/upload-artifact@v2
+        if: matrix.os != 'ubuntu-latest'
+        with:
+          name: wheels
+          path: dist/*.whl
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') && matrix.os != 'ubuntu-latest'
+        with:
+          files: dist/rustyaml*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  manylinux-build:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    needs: lint
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+        with:
+          path: io
+     
+      - name: build wheels
+        run: io/build-wheels.sh
+
+      - name: archive wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: wheels
+          path: io/dist/*manylinux2014*.whl
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [manylinux-build, native-build]
+    steps: 
+
+      - uses: actions/download-artifact@v2
+        with: 
+          name: wheels
+          path: dist/
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI }}
+          skip_existing: true
