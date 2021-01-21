@@ -1,7 +1,10 @@
 from rustyaml import loads, dumps
 
 import yaml
-from yaml import CLoader as Loader, CDumper as Dumper
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper # not good for benchmarking
 
 YAML = """
 name: Mark McGwire

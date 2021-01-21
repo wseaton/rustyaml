@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rustyaml"
-version = "0.1.0"
+version = "0.1.1"
 license = "MIT"
 description = "Python bindings for rust-yaml"
 authors = ["Will Eaton <me@wseaton.com>"]
