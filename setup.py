@@ -9,7 +9,7 @@ package_data = \
 
 setup_kwargs = {
     'name': 'rustyaml',
-    'version': '0.1.0',
+    'version': '0.1.1',
     'description': 'Python bindings for rust-yaml',
     'long_description': None,
     'author': 'Will Eaton',

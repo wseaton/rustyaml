@@ -1,6 +1,6 @@
 [package]
 name = "rustyaml"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["weaton <weaton@redhat.com>"]
 edition = "2018"
 
