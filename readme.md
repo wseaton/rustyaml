@@ -1,8 +1,23 @@
 # rustyaml
 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wseaton/rustyaml/CI) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/rustyaml)
+
+
 This is an experimental rust-powered python extension to parse YAML using rust's `serde_yaml` and `rust-yaml` crates.
 
 Code is heavily inspired by https://github.com/mre/hyperjson/ and https://github.com/samuelcolvin/rtoml.
+
+One #TODO is to expand the test suite to ensure the YAML is being parsed according to spec (or at least `pyyaml`'s implementation).
+
+**Note:** Direct Python object support a-la `pyyaml` is a non-goal with this library.
+
+## Install
+
+Cross platfrom wheels are distributed on pypi, to install:
+
+```
+pip install rustyaml
+```
 
 ## Benchmarks
 
