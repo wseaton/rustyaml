@@ -84,7 +84,7 @@ jobs:
         run: poetry run python setup.py bdist_wheel && poetry install
 
       - name: pytest
-        run: poetry run pytest tests
+        run: poetry run pytest tests --ignore-glob='benchmark*.py'
 
       - name: archive wheels
         uses: actions/upload-artifact@v2
