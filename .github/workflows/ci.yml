@@ -108,17 +108,15 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v2
-        with:
-          path: io
-     
+
       - name: build wheels
-        run: io/build-wheels.sh
+        run: build-wheels.sh
 
       - name: archive wheels
         uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: io/dist/*manylinux2014*.whl
+          path: dist/*manylinux2014*.whl
 
   publish:
     runs-on: ubuntu-latest
