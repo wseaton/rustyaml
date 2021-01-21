@@ -1,9 +1,5 @@
 from benchmark import YAML, DATA
-
 from rustyaml import loads, dumps
-
-import yaml
-from yaml import CLoader as Loader, CDumper as Dumper
 
 
 def test_loads():
