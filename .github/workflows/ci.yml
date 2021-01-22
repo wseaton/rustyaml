@@ -116,7 +116,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: $GITHUB_WORKSPACE/dist/*manylinux2014*.whl
+          path: dist/*manylinux2014*.whl
 
   publish:
     runs-on: ubuntu-latest
