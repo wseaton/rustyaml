@@ -110,14 +110,13 @@ jobs:
         uses: actions/checkout@v2
 
       - name: build wheels
-        working-directory: ./build
         run: $GITHUB_WORKSPACE/build-wheels.sh
 
       - name: archive wheels
         uses: actions/upload-artifact@v2
         with:
           name: wheels
-          path: ./build/dist/*manylinux2014*.whl
+          path: dist/*manylinux2014*.whl
 
   publish:
     runs-on: ubuntu-latest
