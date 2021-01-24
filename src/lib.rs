@@ -2,31 +2,28 @@ extern crate pyo3;
 
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-use pyo3::types::{PyAny, PyDateTime, PyDict, PyFloat, PyList, PyTuple};
-use pyo3::{create_exception, wrap_pyfunction};
+use pyo3::types::{PyAny, PyDict, PyFloat, PyList, PyTuple};
+use pyo3::wrap_pyfunction;
 use serde::ser::{self, Serialize, SerializeMap, SerializeSeq, Serializer};
 use serde_yaml::to_string;
 
-use std::str::FromStr;
-
 use yaml_rust::Yaml;
-use yaml_rust::Yaml::{
-    Alias, Array, BadValue, Boolean, Hash, Integer, Null, Real, String as YamlString,
-};
-use yaml_rust::{YamlEmitter, YamlLoader};
+use yaml_rust::Yaml::{Array, BadValue, Boolean, Hash, Integer, Null, Real, String as YamlString};
+use yaml_rust::YamlLoader;
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
 
+// Convert from the internal Yaml representation back to python object.
 fn convert_value(t: &Yaml, py: Python) -> PyResult<PyObject> {
     match t {
         Hash(table) => {
             let d = PyDict::new(py);
             for (key, value) in table.iter() {
+                // This fails if the key type is unhashable, but so does pyyaml?
                 d.set_item(convert_value(key, py)?, convert_value(value, py)?)?;
             }
             Ok(d.to_object(py))
         }
-
         Array(array) => {
             let mut list: Vec<PyObject> = Vec::with_capacity(array.len());
             for value in array {
@@ -35,13 +32,13 @@ fn convert_value(t: &Yaml, py: Python) -> PyResult<PyObject> {
             Ok(list.to_object(py))
         }
         YamlString(v) => Ok(v.to_object(py)),
+        Boolean(v) => Ok(v.to_object(py)),
         Integer(v) => Ok(v.to_object(py)),
         // Floats are stored as strings, we have to unwrap them on load
         Real(v) => Ok(parse_f64(v).unwrap().to_object(py)),
-        Boolean(v) => Ok(v.to_object(py)),
-        Null => Ok(py.None()),
-        BadValue => Ok(py.None()),
-        _ => Err(PyValueError::new_err("Serialization error")),
+        Null | BadValue => Ok(py.None()),
+        // This implicitly matches Alias, which we don't support.
+        _ => Ok(py.None()),
     }
 }
 
@@ -69,7 +66,6 @@ fn loads(py: Python, yaml: String) -> PyResult<PyObject> {
         Err(e) => Err(PyValueError::new_err(e.to_string())),
     }
 }
-
 
 // adapted from https://github.com/mre/hyperjson/blob/10d31608584ef4499d6b6b10b6dc9455b358fe3d/src/lib.rs#L287-L402
 // and https://github.com/samuelcolvin/rtoml/blob/master/src/lib.rs
@@ -189,11 +185,13 @@ impl<'p, 'a> Serialize for SerializePyObject<'p, 'a> {
                 "{:?} is not serializable to YAML: {:?}",
                 name, repr,
             ))),
-            Err(_) => Err(ser::Error::custom(format_args!("{:?} is not serializable to YAML", name))),
+            Err(_) => Err(ser::Error::custom(format_args!(
+                "{:?} is not serializable to YAML",
+                name
+            ))),
         }
     }
 }
-
 
 #[pyfunction]
 fn dumps(py: Python, obj: PyObject) -> PyResult<String> {
@@ -207,9 +205,8 @@ fn dumps(py: Python, obj: PyObject) -> PyResult<String> {
     }
 }
 
-
 #[pymodule]
-fn _rustyaml(py: Python, m: &PyModule) -> PyResult<()> {
+fn _rustyaml(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add("VERSION", VERSION)?;
     m.add_function(wrap_pyfunction!(loads, m)?).unwrap();
     m.add_function(wrap_pyfunction!(dumps, m)?).unwrap();
