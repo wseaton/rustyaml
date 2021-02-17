@@ -1,7 +1,5 @@
 # rustyaml
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/wseaton/rustyaml/CI) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/rustyaml)
-
 
 This is an experimental rust-powered python extension to parse YAML using rust's `serde_yaml` and `rust-yaml` crates.
 
