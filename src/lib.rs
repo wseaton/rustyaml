@@ -97,7 +97,7 @@ impl<'p, 'a> Serialize for SerializePyObject<'p, 'a> {
 
         macro_rules! isa {
             ($v:ident, $t:ty) => {
-                self.py.is_instance::<$t, _>($v).map_err(debug_py_err)?
+                $v.is_instance::<$t>().map_err(debug_py_err)?
             };
         }
 

@@ -7,7 +7,7 @@ This is an experimental rust-powered python extension to parse YAML using rust's
 
 Code is heavily inspired by https://github.com/mre/hyperjson/ and https://github.com/samuelcolvin/rtoml.
 
-One `#TODO` is to expand the test suite to ensure the YAML is being parsed according to spec (or at least `pyyaml`'s implementation). 
+One `#TODO` is to expand the test suite to ensure the YAML is being parsed according to spec (or at least `pyyaml`'s implementation).
 
 **Note:** Direct Python object support a-la `pyyaml` is a non-goal with this library.
 
@@ -28,17 +28,17 @@ pip install rustyaml
 ## Benchmarks
 
 ```sh
-poetry run pytest tests/benchmark.py 
+poetry run pytest tests/benchmark.py
 ```
 
 ```
 ------------------------------------------------------------------------------------ benchmark: 4 tests -----------------------------------------------------------------------------------
 Name (time in us)         Min                 Max               Mean            StdDev             Median               IQR            Outliers  OPS (Kops/s)            Rounds  Iterations
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-test_rust_dumps        5.7510 (1.0)       41.9760 (1.08)      6.0786 (1.0)      1.2679 (1.08)      5.9240 (1.0)      0.0710 (1.0)      810;2916      164.5115 (1.0)       32602           1
-test_rust_loads        6.3290 (1.10)      38.8540 (1.0)       6.9765 (1.15)     1.1720 (1.0)       6.6220 (1.12)     0.7585 (10.68)     578;468      143.3390 (0.87)      13820           1
-test_python_load      40.3580 (7.02)     105.9330 (2.73)     42.4503 (6.98)     3.9638 (3.38)     41.7440 (7.05)     0.5960 (8.39)      178;699       23.5570 (0.14)       6394           1
-test_python_dump      44.1710 (7.68)     108.8190 (2.80)     45.9539 (7.56)     2.8028 (2.39)     45.5050 (7.68)     0.5975 (8.42)      294;780       21.7609 (0.13)       8349           1
+test_rust_dumps        5.1400 (1.0)       61.6540 (2.63)      5.6480 (1.0)      1.3588 (1.0)       5.4510 (1.0)      0.1480 (1.0)     1559;3169      177.0538 (1.0)       40621           1
+test_rust_loads        6.5540 (1.28)      23.4780 (1.0)       7.6907 (1.36)     1.8920 (1.39)      6.8380 (1.25)     0.2360 (1.59)    2170;2331      130.0278 (0.73)      11757           1
+test_python_load      42.3380 (8.24)      93.7420 (3.99)     49.7293 (8.80)     9.7517 (7.18)     47.5965 (8.73)     5.1035 (34.48)       12;14       20.1089 (0.11)        128           1
+test_python_dump      43.7480 (8.51)     105.9500 (4.51)     46.1846 (8.18)     3.9249 (2.89)     45.2280 (8.30)     0.7410 (5.01)     427;1150       21.6522 (0.12)       7538           1
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ```
 
