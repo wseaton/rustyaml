@@ -95,12 +95,6 @@ impl<'p, 'a> Serialize for SerializePyObject<'p, 'a> {
             };
         }
 
-        macro_rules! isa {
-            ($v:ident, $t:ty) => {
-                $v.is_instance::<$t>().map_err(debug_py_err)?
-            };
-        }
-
         macro_rules! add_to_map {
             ($map:ident, $key:ident, $value:ident) => {
                 if $key.is_none() {
@@ -123,29 +117,11 @@ impl<'p, 'a> Serialize for SerializePyObject<'p, 'a> {
             };
         }
 
-        fn debug_py_err<E: ser::Error>(err: PyErr) -> E {
-            E::custom(format_args!("{:?}", err))
-        }
-
         cast!(|x: &PyDict| {
             let mut map = serializer.serialize_map(Some(x.len()))?;
 
-            // https://github.com/alexcrichton/toml-rs/issues/142#issuecomment-278970591
-            // taken from alexcrichton/toml-rs/blob/ec4e821f3bb081391801e4c00aa90bf66a53562c/src/value.rs#L364-L387
             for (k, v) in x {
-                if !isa!(v, PyList) && !isa!(v, PyTuple) && !isa!(v, PyDict) {
-                    add_to_map!(map, k, v);
-                }
-            }
-            for (k, v) in x {
-                if isa!(v, PyList) || isa!(v, PyTuple) {
-                    add_to_map!(map, k, v);
-                }
-            }
-            for (k, v) in x {
-                if isa!(v, PyDict) {
-                    add_to_map!(map, k, v);
-                }
+                add_to_map!(map, k, v);
             }
             map.end()
         });
