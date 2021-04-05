@@ -1,5 +1,6 @@
 # rustyaml
 
+ 🚧🚧🚧
 
 This is an experimental rust-powered python extension to parse YAML using rust's `serde_yaml` and `rust-yaml` crates.
 
@@ -12,14 +13,13 @@ One `#TODO` is to expand the test suite to ensure the YAML is being parsed accor
 ## Known Issues
 
 * Aliases are not recognized and supported via `dumps`. The object will be printed twice in its entirety. This could probably be fixed with some FFI trickery to check the references of the python objects from rust.
-
-
+* Objects are not gauranteed to roundtrip on the first iteration due to some formatting getting automatically applied by `serde-yaml` (although they will roundtrip in subsequent iterations)
 
 ## Install
 
 Cross platform wheels are distributed on pypi, to install:
 
-```
+```sh
 pip install rustyaml
 ```
 
@@ -30,18 +30,19 @@ poetry run pytest tests/benchmark.py
 ```
 
 ```
------------------------------------------------------------------------------------- benchmark: 4 tests -----------------------------------------------------------------------------------
-Name (time in us)         Min                 Max               Mean            StdDev             Median               IQR            Outliers  OPS (Kops/s)            Rounds  Iterations
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-test_rust_dumps        5.1400 (1.0)       61.6540 (2.63)      5.6480 (1.0)      1.3588 (1.0)       5.4510 (1.0)      0.1480 (1.0)     1559;3169      177.0538 (1.0)       40621           1
-test_rust_loads        6.5540 (1.28)      23.4780 (1.0)       7.6907 (1.36)     1.8920 (1.39)      6.8380 (1.25)     0.2360 (1.59)    2170;2331      130.0278 (0.73)      11757           1
-test_python_load      42.3380 (8.24)      93.7420 (3.99)     49.7293 (8.80)     9.7517 (7.18)     47.5965 (8.73)     5.1035 (34.48)       12;14       20.1089 (0.11)        128           1
-test_python_dump      43.7480 (8.51)     105.9500 (4.51)     46.1846 (8.18)     3.9249 (2.89)     45.2280 (8.30)     0.7410 (5.01)     427;1150       21.6522 (0.12)       7538           1
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------- benchmark: 4 tests -----------------------------------------------------------------------------------
+Name (time in us)         Min                Max               Mean            StdDev             Median               IQR            Outliers  OPS (Kops/s)            Rounds  Iterations
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+test_rust_dumps        3.9600 (1.0)      19.5400 (1.54)      4.4272 (1.0)      0.4513 (1.45)      4.3500 (1.0)      0.0900 (1.0)     1799;3994      225.8787 (1.0)       50378           1
+test_rust_loads        4.1500 (1.05)     12.7000 (1.0)       4.5778 (1.03)     0.3117 (1.0)       4.5600 (1.05)     0.0900 (1.0)       412;862      218.4474 (0.97)      22630           1
+test_python_load      28.3200 (7.15)     58.1000 (4.57)     31.5107 (7.12)     2.8282 (9.07)     30.8200 (7.09)     0.8700 (9.67)     669;1078       31.7353 (0.14)       8668           1
+test_python_dump      29.8700 (7.54)     61.8600 (4.87)     32.8807 (7.43)     2.5988 (8.34)     32.1400 (7.39)     1.1200 (12.44)    820;1114       30.4129 (0.13)      11467           1
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Legend:
+  Outliers: 1 Standard Deviation from Mean; 1.5 IQR (InterQuartile Range) from 1st Quartile and 3rd Quartile.
+  OPS: Operations Per Second, computed as 1 / Mean
 ```
-
-
-
 
 ## Develop
 
