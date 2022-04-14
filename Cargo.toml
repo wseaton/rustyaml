@@ -17,6 +17,6 @@ serde_yaml = "0.8"
 yaml-rust = "0.4"
 
 [dependencies.pyo3]
-version = "0.14.1"
+version = "0.16.4"
 features = ["extension-module"]
 
