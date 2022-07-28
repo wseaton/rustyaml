@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 serde = "1.0"
-serde_yaml = "0.8"
+serde_yaml = "0.9"
 yaml-rust = "0.4"
 
 [dependencies.pyo3]
